@@ -4,6 +4,8 @@ AlekhyaaBackend.iml
 __pycache__
 .vscode
 .env
+Scrapped_Images
+webpage_links.txt
 webpage_text.txt
 
 # Byte-compiled / optimized / DLL files
