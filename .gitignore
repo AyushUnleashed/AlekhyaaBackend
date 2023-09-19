@@ -1,0 +1,7 @@
+venv/
+.idea/
+AlekhyaaBackend.iml
+__pycache__
+.vscode
+.env
+webpage_text.txt
