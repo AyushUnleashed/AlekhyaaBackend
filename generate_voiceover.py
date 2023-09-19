@@ -6,7 +6,6 @@ The function in here takes two parameters:
 Name of shorlisted narrater : voice_id
 Bella: (super sexy voice, crips and clear): EXAVITQu4vr4xnSDxMaL
 Rachel: (normal fast speaking american): 21m00Tcm4TlvDq8ikWAM
-
 '''
 
 
