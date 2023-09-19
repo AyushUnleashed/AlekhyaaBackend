@@ -10,11 +10,11 @@ Rachel: (normal fast speaking american): 21m00Tcm4TlvDq8ikWAM
 
 
 import os
-from fastapi import FastAPI, HTTPException
+# from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
 import requests
 
-app = FastAPI()
+# app = FastAPI()
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -29,8 +29,8 @@ if not elevenlabs_api_key:
 base_url = "https://api.elevenlabs.io/v1/text-to-speech"
 
 # @app.post("/generate-voiceover/{voice_id}")
-@app.post("/generate-voiceover/EXAVITQu4vr4xnSDxMaL")
-async def generate_voiceover(voice_id: str, text: str):
+# @app.post("/generate-voiceover/EXAVITQu4vr4xnSDxMaL")
+def generate_voiceover(voice_id: str, text: str):
     # Define the API endpoint
     endpoint = f"{base_url}/{voice_id}"
     
@@ -67,4 +67,5 @@ async def generate_voiceover(voice_id: str, text: str):
     else:
         # Handle API error responses
         error_message = response.json()["detail"][0]["msg"]
-        raise HTTPException(status_code=response.status_code, detail=error_message)
+        print(response.status_code," ",error_message)
+        # raise HTTPException(status_code=response.status_code, detail=error_message)
