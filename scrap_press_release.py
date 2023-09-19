@@ -27,6 +27,15 @@ def extract_links_and_text(html_content):
         if href:
             assets.append(href)
 
+    # Remove content after "Read this release in" in the text
+    page_text = re.sub(r'Read this release in.*', '', page_text, flags=re.DOTALL)
+
+    # Reduce multiple consecutive blank lines to a single empty line
+    page_text = re.sub(r'\n\s*\n', '\n\n', page_text)
+
+    with open('webpage_text.txt', 'w', encoding='utf-8') as text_file:
+        text_file.write(page_text)
+
     # Extract date, time, and department name using regex
     date_time_match = re.search(r'(\d{1,2} [A-Z]+ \d{4} \d{1,2}:\d{2}[APM]+) by ([A-Z\s]+)', page_text)
 
@@ -44,6 +53,7 @@ def extract_links_and_text(html_content):
         time = date_parts[3]
 
     return assets, page_text, date, time, department
+
 def download_images(html_content, base_url):
     image_paths = []
 
@@ -110,7 +120,6 @@ def scrape_web_page(url):
     if html_content is not None:
         assets, page_text, date, time, department = extract_links_and_text(html_content)
         filtered_links = filter_links(assets)
-
         save_links_to_file(filtered_links)
 
         print("Links on the page:")
