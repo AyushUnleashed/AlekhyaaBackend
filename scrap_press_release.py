@@ -33,7 +33,10 @@ def extract_links_and_text(html_content):
     # Reduce multiple consecutive blank lines to a single empty line
     page_text = re.sub(r'\n\s*\n', '\n\n', page_text)
 
-    with open('webpage_text.txt', 'w', encoding='utf-8') as text_file:
+    if not os.path.exists('assets'):
+        os.mkdir('assets')
+
+    with open('assets/webpage_text.txt', 'w', encoding='utf-8') as text_file:
         text_file.write(page_text)
 
     # Extract date, time, and department name using regex
@@ -110,7 +113,10 @@ def filter_links(links):
     return filtered_links
 
 def save_links_to_file(links, filename='webpage_links.txt'):
-    with open(filename, 'w', encoding='utf-8') as links_file:
+    if not os.path.exists('assets'):
+        os.mkdir('assets')
+
+    with open(f'assets/{filename}', 'w', encoding='utf-8') as links_file:
         for link in links:
             links_file.write(link + '\n')
 
