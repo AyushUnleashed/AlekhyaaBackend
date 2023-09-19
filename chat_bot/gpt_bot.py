@@ -3,10 +3,19 @@ import os
 import openai
 from fastapi import HTTPException
 
-SYSTEM_PROMPT = f'''
-You are a Video Journalist form Wion, 
+SYSTEM_PROMPT_OLD = f'''
+You are a Video Journalist from Wion, 
 I'll be pasting a dump from Press Information Bureau of india website, 
 using that generate a youtube video script covering the press release
+------------ Press Release Dump -------------
+'''
+
+SYSTEM_PROMPT = f'''
+You are a Video Journalist from Alekhyaa, 
+I'll be pasting a dump from Press Information Bureau of india website, 
+using that generate a youtube video script covering the press release
+
+For each section First give Visual as [Visual: ] , then write Voiceover: directly
 ------------ Press Release Dump -------------
 '''
 
