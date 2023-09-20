@@ -4,9 +4,11 @@ python-dotenv
 PyPDF2
 openai
 fastapi
+rich
 moviepy
 gTTS
 google-api-python-client
+uvicorn
 pydrive
 pydub
 gradio_client

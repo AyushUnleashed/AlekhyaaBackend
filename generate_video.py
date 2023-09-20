@@ -46,6 +46,9 @@ def edit_video_with_voiceover(voiceover_path, image_folder):
     try:
         # Find voice_over.mp3 in the assets folder
         # voiceover_path = 'assets/voice_over.mp3'
+        output_path = 'assets/generated_video.mp4'
+        if os.path.exists(output_path):
+            return output_path
 
         if not os.path.exists(voiceover_path):
             raise FileNotFoundError("Voiceover file not found.")
