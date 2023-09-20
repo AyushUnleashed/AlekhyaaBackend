@@ -47,11 +47,13 @@ def scrape_images_from_website(url):
             img_tags = soup.find_all('img')
 
             # Extract the image URLs and save them
-            
-            for img_tag in img_tags:
-                img_url = img_tag.get('src')
-                if img_url:
-                    save_image(img_url, folder_name)
+            if len(img_tags) == 0:
+                print('No images found on the page.')
+            else:
+                for img_tag in img_tags:
+                    img_url = img_tag.get('src')
+                    if img_url:
+                        save_image(img_url, folder_name)
         else:
             print(f'Failed to fetch URL: {url}')
     else:
