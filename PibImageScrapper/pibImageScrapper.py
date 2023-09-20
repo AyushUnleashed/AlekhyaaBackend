@@ -1,64 +1,71 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 import os
-import random
-import requests
-from bs4 import BeautifulSoup
-from urllib.parse import urlparse, parse_qs
+import time
 
-# Function to extract PRID from the URL
-def extract_prid_from_url(url):
-    parsed_url = urlparse(url)
-    query_parameters = parse_qs(parsed_url.query)
-    if 'PRID' in query_parameters:
-        return query_parameters['PRID'][0]
-    else:
-        return None
+# chrome_options = webdriver.ChromeOptions()
+# chrome_options.add_argument("--ignore-certificate-errors")
 
-# Function to create a folder for images
-def create_folder(folder_name):
-    if not os.path.exists(folder_name):
-        os.makedirs(folder_name)
+# driver = webdriver.Chrome(options=chrome_options)
+# driver = webdriver.Chrome()
+# URL of the website
+url = "https://pib.gov.in/PhotogalleryNew.aspx"
+# driver.get(url)
 
-# Function to download and save an image
-def save_image(image_url, folder_name):
-    response = requests.get(image_url)
-    if response.status_code == 200:
-        # Generate a random image name
-        random_image_name = str(random.randint(1, 10000)) + '.jpg'
-        image_path = os.path.join(folder_name, random_image_name)
-        with open(image_path, 'wb') as image_file:
-            image_file.write(response.content)
-        print(f'Saved: {image_path}')
-    else:
-        print(f'Failed to download image: {image_url}')
+drive_path='W:\\Programming\\SIH-2023\\AlekhyaaBackend\\env\\Scripts\\geckodriver.exe'
 
-# Main function
-def scrape_images_from_website(url):
-    prid = extract_prid_from_url(url)
-    if prid:
-        folder_name = f'PRID_{prid}'
-        create_folder(folder_name)
+firefox_service = FirefoxService(executable_path=drive_path)
+firefox_options = FirefoxOptions()
+firefox_driver = webdriver.Firefox(service=firefox_service, options=firefox_options)
+firefox_driver.get(url)
+# Get the current day
+from datetime import date
+current_day = date.today().day
 
-        # Send an HTTP GET request to the URL
-        response = requests.get(url)
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.text, 'html.parser')
+# Select the day from the dropdown
+day_dropdown = Select(firefox_driver.find_element(By.ID, "ContentPlaceHolder1_ddlday"))
+day_dropdown.select_by_value(str(current_day))
+# Find all the album links and store them in a list
+album_links = firefox_driver.find_elements(By.XPATH, '//a[starts-with(@href, "ShowAlbum.aspx?albumid=")]')
 
-            # Find all image tags in the HTML
-            img_tags = soup.find_all('img')
+# Loop through the album links
+for album_link in album_links:
+    album_id = album_link.get_attribute("href").split("albumid=")[1]
+    album_directory = f"Album_{album_id}"
 
-            # Extract the image URLs and save them
-            if len(img_tags) == 0:
-                print('No images found on the page.')
-            else:
-                for img_tag in img_tags:
-                    img_url = img_tag.get('src')
-                    if img_url:
-                        save_image(img_url, folder_name)
-        else:
-            print(f'Failed to fetch URL: {url}')
-    else:
-        print('PRID not found in the URL.')
+    # Create a directory for the album if it doesn't exist
+    if not os.path.exists(album_directory):
+        os.makedirs(album_directory)
 
-if __name__ == "__main__":
-    input_url = "https://pib.gov.in/PressReleseDetail.aspx?PRID=1959030"
-    scrape_images_from_website(input_url)
+    # # Use an explicit wait to wait for the element to become clickable
+    # wait = WebDriverWait(firefox_driver, 10)
+    # album_link = wait.until(EC.element_to_be_clickable((By.XPATH, '//a[starts-with(@href, "ShowAlbum.aspx?albumid=")]')))
+
+    # Scroll the album link into view
+    firefox_driver.execute_script("arguments[0].scrollIntoView(true);", album_link)
+    
+    # Wait for a short period to ensure the link is fully in view
+    time.sleep(1)
+    
+
+
+    # Click on the album link
+    album_link.click()
+
+    # Inside the album, find and download images
+    image_elements = firefox_driver.find_elements(By.XPATH, '//img[contains(@src, "Photogallery")]')
+    for index, image_element in enumerate(image_elements):
+        image_url = image_element.get_attribute("src")
+        image_filename = f"{album_directory}/Image_{index+1}.jpg"
+
+        # Download the image
+        urllib.request.urlretrieve(image_url, image_filename)
+
+    # Go back to the main page
+    firefox_driver.back()
+firefox_driver.quit()
