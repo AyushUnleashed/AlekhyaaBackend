@@ -30,11 +30,20 @@ def prepare_llm_prompt_paid(press_release_dump: str) -> str:
 
 
 def get_script_from_press_release(press_release_dump: str):
-    response = get_gpt_response(prepare_llm_prompt_paid(press_release_dump), paid=True)
+    response = get_gpt_response(prepare_llm_prompt(press_release_dump), paid=False)
+
     if response is None:
         print("Sever is down")
         return
-    return response
+
+    if not os.path.exists('assets'):
+        os.mkdir('assets')
+
+    file_path = 'assets/gpt_response.txt'
+    with open(file_path, 'w', encoding='utf-8') as text_file:
+        text_file.write(response)
+
+    return file_path
 
 
 def clean_script(video_script):
@@ -46,7 +55,12 @@ def get_clean_text_for_t2s(file_path):
     file_contents = load_text_from_file(file_path)
 
     if file_contents:
-        video_script = get_script_from_press_release(file_contents)
+        # file_path = get_script_from_press_release(file_contents)
+        file_path = 'assets/gpt_response.txt'
+        # Open and read the file
+        with open(file_path, "r") as file:
+            video_script = file.read()
+
         cleaned_voiceover = clean_script(video_script)
         print("cleaned_voiceover:\n", cleaned_voiceover)
 
