@@ -39,16 +39,18 @@ def text_to_video(url_to_scrape):
 
         st.text("Generating voiceover...")
         cleaned_voiceover = read_voice_over_text()
-        voice_file = text_to_speech(cleaned_voiceover)
+        voice_file = text_to_speech(cleaned_voiceover, speed=1.25)
 
         st.text("Editing video with voiceover...")
         image_folder = 'Scrapped_Images'
-        edit_video_with_voiceover(voice_file, image_folder)
+        video_path = edit_video_with_voiceover(voice_file, image_folder)
 
         st.success("Video has been saved!")
+        return video_path
 
     except Exception as e:
         st.error(f"Error: {str(e)}")
+        return None
 
 def main():
     st.title("Alekhyaa ")
@@ -58,7 +60,14 @@ def main():
 
     if st.button("Generate Video"):
         st.text("Generating video, please wait...")
-        text_to_video(url_to_scrape)
+        video_path = text_to_video(url_to_scrape)
+
+        from upload_to_drive import auth_drive, upload_video_to_drive
+        gauth = auth_drive()  # Authenticate with Google Drive
+        video_link = upload_video_to_drive(gauth, video_path)
+
+        # Display the generated video link
+        st.write("Generated Video Link:", video_link)
 
 if __name__ == "__main__":
     main()

@@ -6,4 +6,8 @@ openai
 fastapi
 moviepy
 gTTS
+google-api-python-client
+pydrive
+pydub
+gradio_client
 streamlit
