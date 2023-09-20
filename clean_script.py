@@ -1,18 +1,23 @@
 import re
 def extract_visual_and_voiceover_arrays(text):
-    visual_matches = re.findall(r'\[(?:\s*(?:\w+\s+)*?)?Visual:\s*(.*?)\]\s*Voiceover:\s*(.*?)\n', text, re.DOTALL)
+    try:
+        visual_matches = re.findall(r'\[(?:\s*(?:\w+\s+)*?)?Visual:\s*(.*?)\]\s*Voiceover:\s*(.*?)\n', text, re.DOTALL)
 
-    visuals = []
-    voiceovers = []
+        visuals = []
+        voiceovers = []
 
-    for visual, voiceover in visual_matches:
-        visuals.append(visual.strip())
-        voiceovers.append(voiceover.strip())
+        for visual, voiceover in visual_matches:
+            visuals.append(visual.strip())
+            voiceovers.append(voiceover.strip())
 
-    # Create a single cleaned voiceover string by joining all voiceovers
-    cleaned_voiceover = '\n\n'.join(voiceovers)
+        # Create a single cleaned voiceover string by joining all voiceovers
+        cleaned_voiceover = '\n\n'.join(voiceovers)
 
-    return visuals,voiceovers,cleaned_voiceover
+        return visuals,voiceovers,cleaned_voiceover
+
+    except Exception as e:
+        print(f"Error while extract_visual_and_voiceover_arrays: {str(e)}")
+        raise e
 
 
 
