@@ -85,7 +85,7 @@ class PressRelease(BaseModel):
 
 
 @endpoint_router.get("/get_status")
-def get_status():
+async def get_status():
     return STATUS
 
 def update_status(status: str):
@@ -93,7 +93,7 @@ def update_status(status: str):
     STATUS = status
 
 @endpoint_router.post("/generate_video")
-def generate_video(pressReleaseLink: PressRelease):
+async def generate_video(pressReleaseLink: PressRelease):
     try:
         response = main(pressReleaseLink.pressReleaseLink)
         update_status("FINISHED")

@@ -48,6 +48,17 @@ def text_to_video(url_to_scrape):
     except Exception as e:
         st.error(f"Error: {str(e)}")
         return None
+import shutil
+
+def delete_cache():
+    # Define the folders to delete
+    folders_to_delete = ["assets", "Scrapped_Images"]
+
+    # Loop through the folders and delete them along with their contents
+    for folder_name in folders_to_delete:
+        if os.path.exists(folder_name):
+            shutil.rmtree(folder_name)
+            st.text(f"Deleted folder: {folder_name}")
 
 def main():
     st.title("Alekhyaa ")
@@ -65,6 +76,9 @@ def main():
 
         # Display the generated video link
         st.write("Generated Video Link:", video_link)
+
+    if st.button("Delete Cache"):
+        delete_cache()
 
 if __name__ == "__main__":
     main()
